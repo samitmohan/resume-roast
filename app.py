@@ -74,6 +74,9 @@ st.markdown(
       color: var(--fg) !important;
       font-family: var(--font) !important;
     }
+    [data-testid="stSidebar"] * {
+      color: #000000 !important;
+    }
     .custom-title, .stHeader {
       font-family: var(--font) !important;
       font-weight: 300 !important;
@@ -233,18 +236,15 @@ if submit and uploaded_file:
     # render overall takeaways separately
     if takeaway:
         st.markdown("### Overall Takeaway")
-        # Parse bullets and render as HTML list
+        # Remove trailing "**" from bullets if present and reformat consistently
         items = [
-            line.strip().lstrip("* ").strip()
+            re.sub(r"\*\*$", "", line.strip().lstrip("* ").strip())
             for line in takeaway.strip().splitlines()
             if line.strip()
         ]
-        list_html = "<ul style='margin:0; padding-left:1.5rem;'>"
-        for item in items:
-            list_html += f"<li>{item}</li>"
-        list_html += "</ul>"
+        formatted_items = "\n".join(f"- {item}" for item in items)
         st.markdown(
-            f"<div style=\"background-color: var(--secondary-bg); border-left: 4px solid var(--accent); padding:1rem; border-radius:4px;\">{list_html}</div>",
+            f"<div style=\"background-color: var(--secondary-bg); border-left: 4px solid var(--accent); padding:1rem; border-radius:4px;\"><p>{formatted_items}</p></div>",
             unsafe_allow_html=True
         )
 
