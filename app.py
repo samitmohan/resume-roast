@@ -206,7 +206,10 @@ if submit and uploaded_file:
     # render overall takeaways separately
     if takeaway:
         st.markdown("### Overall Takeaway")
-        st.info(takeaway, icon="💡")
+        st.markdown(
+            f"<div style=\"background-color: var(--secondary-bg); border-left: 4px solid var(--accent); padding:1rem; border-radius:4px;\">{takeaway}</div>",
+            unsafe_allow_html=True
+        )
 
     # split ATS score into number and rationale : re magic
     score_text = ats
@@ -216,6 +219,9 @@ if submit and uploaded_file:
         if m:
             score_text = m.group(1)
             rationale = m.group(2).strip()
+
+    if rationale.lower().startswith("rationale:"):
+        rationale = rationale.split(":", 1)[1].strip()
 
     if ats:
         st.metric(label="ATS Compatibility Score", value=score_text)
