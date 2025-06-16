@@ -1,4 +1,4 @@
-[Resume Bot}(https://resumeroastwrapper.streamlit.app/)
+[Resume Bot](https://resumeroastwrapper.streamlit.app/)
 
 A Streamlit app that “roasts” or reviews your resume using Google Gemini AI, providing line-by-line feedback, actionable improvement tips, overall takeaways, and an ATS compatibility score.
 
