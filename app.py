@@ -267,6 +267,6 @@ if submit and uploaded_file:
             rationale = re.sub(r'^[Rr]ationale:\s*', '', rationale)
 
         if score_text:
-            st.metric(label="ATS Compatibility Score", value=score_text)
+            st.markdown(f"<div class='ats-score'>ATS Compatibility Score: <strong>{score_text}</strong></div>", unsafe_allow_html=True)
         if rationale:
-            st.markdown(f"**Rationale:** {rationale}")
+            st.markdown(f"<p style='margin-top:0.5rem;'><strong>Rationale:</strong> {rationale}</p>", unsafe_allow_html=True)
