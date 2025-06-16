@@ -234,33 +234,39 @@ if submit and uploaded_file:
     # render overall takeaways separately
     if takeaway:
         st.markdown("### Overall Takeaway")
-        # Remove trailing "**" from bullets if present and reformat consistently
-        items = [
-            re.sub(r"\*\*$", "", line.strip().lstrip("* ").strip())
-            for line in takeaway.strip().splitlines()
-            if line.strip()
-        ]
+        # Normalize and clean bullets
+        raw_lines = takeaway.strip().splitlines()
+        bullet_lines = []
+        rationale_lines = []
+        for line in raw_lines:
+            line = line.strip()
+            if not line:
+                continue
+            if "ATS Compatibility Score" in line or "Rationale:" in line:
+                rationale_lines.append(line)
+            else:
+                bullet_lines.append(line)
+
+        # Clean bullet markers and trailing '**'
+        items = [re.sub(r"\*\*$", "", re.sub(r"^\s*[-*•]?\s*", "", line)) for line in bullet_lines]
         formatted_items = "\n".join(f"- {item}" for item in items)
+
         st.markdown(
-            f"<div style=\"background-color: var(--secondary-bg); border-left: 4px solid var(--accent); padding:1rem; border-radius:4px;\"><p>{formatted_items}</p></div>",
+            f"<div style=\"background-color: var(--secondary-bg); border-left: 4px solid var(--accent); padding:1rem; border-radius:4px;\">{formatted_items}</div>",
             unsafe_allow_html=True
         )
 
-    # split ATS score into number and rationale : re magic
-    score_text = ats
-    rationale = ""
-    if ats:
-        m = re.match(r"\s*([0-9]{1,3}/100)\**\s*(.*)", ats)
+        ats_text = " ".join(rationale_lines).strip()
+        score_text = ""
+        rationale = ""
+
+        m = re.search(r"(\d{1,3}/100)", ats_text)
         if m:
             score_text = m.group(1)
-            rationale = m.group(2).strip()
+            rationale = ats_text.replace(m.group(0), "").strip()
+            rationale = re.sub(r'^[Rr]ationale:\s*', '', rationale)
 
-    # Clean any remaining leading 'Rationale:' text safely once
-    if rationale.lower().startswith("rationale:"):
-        rationale = rationale.split(":", 1)[1].strip()
-    rationale = re.sub(r'^[Rr]ationale:\s*', '', rationale)
-
-    if ats:
-        st.metric(label="ATS Compatibility Score", value=score_text)
+        if score_text:
+            st.metric(label="ATS Compatibility Score", value=score_text)
         if rationale:
             st.markdown(f"**Rationale:** {rationale}")
