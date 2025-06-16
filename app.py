@@ -165,6 +165,29 @@ st.markdown(
       outline: 2px solid var(--accent) !important;
       outline-offset: 2px !important;
     }
+    /* Fix Cloud uploader to light background + dark text */
+    /* Container wrapper */
+    [data-testid="file-uploader-container"] > div {
+    background-color: var(--secondary-bg) !important;  /* your #f5f5f5 */
+    border-color: rgba(0,0,0,0.1) !important;
+    }
+    /* Inner drag/drop zone */
+    [data-testid="upload-droppable"] {
+    background-color: var(--secondary-bg) !important;
+    }
+    /* Make sure all placeholder text & icons inside are dark */
+    [data-testid="upload-droppable"] *,
+    [data-testid="file-uploader-container"] p,
+    [data-testid="file-uploader-container"] svg {
+    color: var(--fg) !important;  /* your #000 */
+    fill: var(--fg) !important;
+    }
+    /* Style the Browse button in the uploader */
+    [data-testid="file-uploader-container"] button {
+    background-color: var(--accent) !important;
+    color: var(--fg) !important;
+    min-width: 200px !important;
+    }
     </style>
     """,
     unsafe_allow_html=True
