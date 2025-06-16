@@ -93,7 +93,7 @@ st.markdown(
       width: 200px !important;
     }
     /* Ensure all Streamlit buttons use black text */
-    .stButton > button, button {
+    .stButton > button {
       color: #000000 !important;
     }
     .stFileUploader button {
@@ -133,6 +133,7 @@ st.markdown(
       border: 1px solid rgba(0,0,0,0.3) !important;
       border-radius: 8px;
       padding: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1) !important;
     }
     .stFileUploader label {
       color: var(--fg) !important;
@@ -175,25 +176,22 @@ st.markdown(
     /* Fix Cloud uploader to light background + dark text */
     /* Container wrapper */
     [data-testid="file-uploader-container"] > div {
-    background-color: var(--secondary-bg) !important;  /* your #f5f5f5 */
-    border-color: rgba(0,0,0,0.1) !important;
+      background-color: var(--secondary-bg) !important;  /* your #f5f5f5 */
+      border-color: rgba(0,0,0,0.1) !important;
+      color: var(--fg) !important;
+      fill: var(--fg) !important;
     }
     /* Inner drag/drop zone */
     [data-testid="upload-droppable"] {
-    background-color: var(--secondary-bg) !important;
-    }
-    /* Make sure all placeholder text & icons inside are dark */
-    [data-testid="upload-droppable"] *,
-    [data-testid="file-uploader-container"] p,
-    [data-testid="file-uploader-container"] svg {
-    color: var(--fg) !important;  /* your #000 */
-    fill: var(--fg) !important;
+      background-color: var(--secondary-bg) !important;
+      color: var(--fg) !important;
+      fill: var(--fg) !important;
     }
     /* Style the Browse button in the uploader */
     [data-testid="file-uploader-container"] button {
-    background-color: var(--accent) !important;
-    color: var(--fg) !important;
-    min-width: 200px !important;
+      background-color: var(--accent) !important;
+      color: var(--fg) !important;
+      min-width: 200px !important;
     }
     </style>
     """,
@@ -252,14 +250,14 @@ if submit and uploaded_file:
     score_text = ats
     rationale = ""
     if ats:
-        m = re.match(r"\s*([0-9]{1,3}/100)\s*(.*)", ats)
+        m = re.match(r"\s*([0-9]{1,3}/100)\**\s*(.*)", ats)
         if m:
             score_text = m.group(1)
             rationale = m.group(2).strip()
 
+    # Clean any remaining leading 'Rationale:' text safely once
     if rationale.lower().startswith("rationale:"):
         rationale = rationale.split(":", 1)[1].strip()
-    # Clean any remaining leading 'Rationale:' text
     rationale = re.sub(r'^[Rr]ationale:\s*', '', rationale)
 
     if ats:
