@@ -25,7 +25,7 @@ def gemini_response(resume_text, mode="Roast"):
         prompt = f"""
 {intro_roast}
 For each bullet or sentence in this resume:
-1. Call out the problem bluntly (tone: witty, sarcastic, and a bit mocking).
+1. Call out the problem bluntly (tone: witty, gen-z, sarcastic, and a bit mocking).
 2. Immediately follow with a one-sentence tip on how to fix it.
 3. Keep each point under 40 words.
 
@@ -88,6 +88,10 @@ st.markdown(
       padding: 0.75rem 1.5rem !important;
       border-radius: 8px !important;
       width: 200px !important;
+    }
+    /* Ensure all Streamlit buttons use black text */
+    .stButton > button, button {
+      color: #000000 !important;
     }
     .stFileUploader button {
       width: 200px !important;
@@ -229,8 +233,18 @@ if submit and uploaded_file:
     # render overall takeaways separately
     if takeaway:
         st.markdown("### Overall Takeaway")
+        # Parse bullets and render as HTML list
+        items = [
+            line.strip().lstrip("* ").strip()
+            for line in takeaway.strip().splitlines()
+            if line.strip()
+        ]
+        list_html = "<ul style='margin:0; padding-left:1.5rem;'>"
+        for item in items:
+            list_html += f"<li>{item}</li>"
+        list_html += "</ul>"
         st.markdown(
-            f"<div style=\"background-color: var(--secondary-bg); border-left: 4px solid var(--accent); padding:1rem; border-radius:4px;\">{takeaway}</div>",
+            f"<div style=\"background-color: var(--secondary-bg); border-left: 4px solid var(--accent); padding:1rem; border-radius:4px;\">{list_html}</div>",
             unsafe_allow_html=True
         )
 
@@ -245,6 +259,8 @@ if submit and uploaded_file:
 
     if rationale.lower().startswith("rationale:"):
         rationale = rationale.split(":", 1)[1].strip()
+    # Clean any remaining leading 'Rationale:' text
+    rationale = re.sub(r'^[Rr]ationale:\s*', '', rationale)
 
     if ats:
         st.metric(label="ATS Compatibility Score", value=score_text)
